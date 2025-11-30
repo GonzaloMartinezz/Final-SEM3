@@ -1,4 +1,5 @@
-const express = require('./models/Server.js');
+const express = require('./src/models/Server.js');
+require('dotenv').config();
 
 const server = new express();
 
