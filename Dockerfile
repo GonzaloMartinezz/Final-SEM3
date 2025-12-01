@@ -1,6 +1,8 @@
 # Usar una imagen base oficial de Node.js (versión 18 o la que prefieras)
 FROM node:18-alpine
 
+# Establecer el directorio de trabajo en /app
+RUN mkdir -p /app 
 # Establecer el directorio de trabajo dentro del contenedor
 WORKDIR /app
 
