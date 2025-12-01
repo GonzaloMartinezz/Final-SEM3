@@ -6,33 +6,51 @@ const EquiposGET = (req = request, res = response) => {
     const {limit , key} = req.query;
     res.json ({
         mensaje: 'Recibo el mensaje',
-        limit 
+        limit ,
        /*  key ,  */
     });
 }
 
+
 const EquiposPOST = async (req = request, res = response) => {
     try {
         const datos = req.body;
-        const { name, city, conference, stadium, trainer, password } = datos;
+        let { name, city, conference, stadium, trainer, password } = datos;
 
-        const equipo = new equiposNba({ name, city, conference, stadium, trainer, password });
+        if (!name) {
+            return res.status(400).json({ ok: false, msg: 'El campo name es obligatorio' });
+        }
+
+        // Normalizar nombre para que coincida con el índice lowercase/trim del esquema
+        const nameNormalized = name.toString().trim().toLowerCase();
+
+        // Comprobar existencia previa para evitar lanzar error 11000
+        const existe = await equiposNba.findOne({ name: nameNormalized });
+        if (existe) {
+            return res.status(409).json({ ok: false, msg: `Ya existe un equipo con el nombre "${nameNormalized}"` });
+        }
+
+        const equipo = new equiposNba({ name: nameNormalized, city, conference, stadium, trainer, password });
 
         const salt = bcryptjs.genSaltSync(10);
         // Encriptar password
         equipo.password = bcryptjs.hashSync(password, salt);
 
         // Guardar en la base de datos
-        await equipo.save();
+        const saved = await equipo.save();
 
-        res.json({
-            equipo: saved,
-            mensaje: 'Registro de equipo exitoso',
-        });
+        return res.status(201).json({ ok: true, equipo: saved, mensaje: 'Registro de equipo exitoso' });
     } catch (error) {
-        console.log(error);
+        console.error('Error creando equipo:', error);
+        if (error.name === 'ValidationError') {
+            return res.status(400).json({ ok: false, msg: 'Error de validación', errors: error.errors });
+        }
+        if (error.code && error.code === 11000) {
+            return res.status(409).json({ ok: false, msg: 'Ya existe un equipo con ese nombre', keyValue: error.keyValue });
+        }
+        return res.status(500).json({ ok: false, msg: 'Error interno', error: error.message });
     }
-} 
+}
 
 const EquiposPUT = (req = request, res = response) => {
     res.json ({

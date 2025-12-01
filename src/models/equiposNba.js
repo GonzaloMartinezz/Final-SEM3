@@ -4,7 +4,9 @@ const EquiposSchema = Schema({
     name: {
         type: String,
         required: [true, 'El nombre del equipo es obligatorio'],
-        unique: true
+        unique: true,
+        trim: true,
+        lowercase: true
     },
     city: {   
         type: String,

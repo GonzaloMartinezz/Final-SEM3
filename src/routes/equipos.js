@@ -1,6 +1,5 @@
 const {Router} = require('express');
 const {check} = require('express-validator');
-const {validarCampos} = require('../middlewares/validarCampos.js');
 
 const router = Router();
 
@@ -17,7 +16,6 @@ router.post('/',
         check('stadium', 'El stadium es obligatorio').notEmpty(),
         check('trainer', 'El trainer es obligatorio').notEmpty(),
         check('password', 'El password debe tener al menos 6 caracteres').isLength({ min: 6 }),
-        validarCampos
     ],
     EquiposPOST
 );
