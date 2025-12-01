@@ -4,9 +4,7 @@ const EquiposSchema = Schema({
     name: {
         type: String,
         required: [true, 'El nombre del equipo es obligatorio'],
-        unique: true,
-        trim: true,
-        lowercase: true
+       
     },
     city: {   
         type: String,
@@ -30,4 +28,4 @@ const EquiposSchema = Schema({
     }
 });
 
-module.exports = model('EquiposNBA', EquiposSchema , 'equiposNBA');
+module.exports = model('Equipo', EquiposSchema , 'equiposNBA');

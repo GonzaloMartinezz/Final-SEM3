@@ -1,15 +1,28 @@
 const {response, request} = require('express');
 const bcryptjs = require('bcryptjs');
-const equiposNba = require('../models/equiposNba.js');
+const Equipo = require('../models/equiposNba.js');
 
-const EquiposGET = (req = request, res = response) => {
-    const {limit , key} = req.query;
-    res.json ({
-        mensaje: 'Recibo el mensaje',
-        limit ,
-       /*  key ,  */
-    });
-}
+const EquiposGET = async (req = request, res = response) => {
+   try {
+        // Buscamos todos los equipos
+        const equipos = await Equipo.find();
+
+        
+        res.json({
+            ok: true,
+            total: equipos.length,
+            equipos
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Error al obtener los equipos. Revisa la consola de VSCode para más detalles.'
+        });
+    }
+}   
+
 
 
 const EquiposPOST = async (req = request, res = response) => {

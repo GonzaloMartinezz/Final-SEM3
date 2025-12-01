@@ -1,14 +1,33 @@
 const {response, request} = require('express');
 const bcryptjs = require('bcryptjs');
-const jugadoresNba = require('../models/jugadoresNba.js');
+const Jugador = require('../models/jugadoresNba.js');
 
-const JugadoresGET = (req = request, res = response) => {
-    const {limit , key} = req.query;
-    res.json ({
-        mensaje: 'Recibo el mensaje',
-        limit ,
-        /* key , */
-    });
+const JugadoresGET = async(req = request, res = response) => {
+    const { limit = 5, desde = 0 } = req.query;
+
+    try {
+       
+        const [ total, jugadores ] = await Promise.all([
+            Jugador.countDocuments(),
+            Jugador.find()
+                .skip( Number(desde) )
+                .limit( Number(limit) )
+        ]);
+
+        res.json({
+            ok: true,
+            total,
+            count: jugadores.length,
+            jugadores
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Error al obtener los jugadores. Revisa la consola.'
+        });
+    }
 }
 
 
