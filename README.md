@@ -36,9 +36,12 @@ git clone [https://github.com/](https://github.com/)[TU_USUARIO]/[NOMBRE_DEL_REP
 cd [NOMBRE_DEL_REPO]
 
 Instala las dependencias:
+
 npm install
+
 Asegúrate de tener una instancia de MongoDB corriendo localmente o usa Atlas.
 Inicia el servidor:
+
 npm run dev
 
 
